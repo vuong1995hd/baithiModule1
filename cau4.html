@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý công nhân</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        h1 {
+            text-align: center;
+        }
+        button {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Quản lý công nhân</h1>
+
+<!-- Bảng hiển thị công nhân -->
+<table id="employeeTable">
+    <thead>
+    <tr>
+        <th>STT</th>
+        <th>Họ và tên</th>
+        <th>Ngày sinh</th>
+        <th>Địa chỉ</th>
+        <th>Lương</th>
+        <th>Chức vụ</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<!-- Form thêm công nhân -->
+<h2>Thêm công nhân mới</h2>
+<label>Họ và tên: <input type="text" id="name"></label><br>
+<label>Ngày sinh: <input type="date" id="birthdate"></label><br>
+<label>Địa chỉ: <input type="text" id="address"></label><br>
+<label>Lương: <input type="number" id="salary"></label><br>
+<label>Chức vụ: <input type="text" id="position"></label><br>
+<button onclick="addEmployee()">Thêm Công nhân</button>
+
+<script>
+    class Employee {
+        constructor(id, name, birthdate, address, salary, position) {
+            this.id = id;
+            this.name = name;
+            this.birthdate = birthdate;
+            this.address = address;
+            this.salary = salary;
+            this.position = position;
+        }
+    }
+
+    class EmployeeManager {
+        constructor() {
+            this.employees = [];
+        }
+
+        addEmployee(employee) {
+            this.employees.push(employee);
+            this.sortEmployees(); // Sắp xếp sau khi thêm
+            this.displayEmployees();
+        }
+
+        sortEmployees() {
+            // Sắp xếp theo tên
+            this.employees.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        displayEmployees() {
+            const tableBody = document.querySelector("#employeeTable tbody");
+            tableBody.innerHTML = ""; // Xóa nội dung cũ của bảng
+
+            this.employees.forEach((employee, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${employee.name}</td>
+                        <td>${employee.birthdate}</td>
+                        <td>${employee.address}</td>
+                        <td>${employee.salary}</td>
+                        <td>${employee.position}</td>
+                    `;
+                tableBody.appendChild(row);
+            });
+        }
+    }
+
+    const employeeManager = new EmployeeManager();
+
+    // Hàm thêm công nhân mới
+    function addEmployee() {
+        const name = document.getElementById("name").value;
+        const birthdate = document.getElementById("birthdate").value;
+        const address = document.getElementById("address").value;
+        const salary = parseFloat(document.getElementById("salary").value);
+        const position = document.getElementById("position").value;
+
+        const newEmployee = new Employee(employeeManager.employees.length + 1, name, birthdate, address, salary, position);
+        employeeManager.addEmployee(newEmployee);
+
+
+        document.getElementById("name").value = "";
+        document.getElementById("birthdate").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("salary").value = "";
+        document.getElementById("position").value = "";
+    }
+
+    // Thêm một số công nhân mẫu ban đầu
+    employeeManager.addEmployee(new Employee(1, "Bùi Tiến Dũng", "1987-11-11", "Quảng Nam", 2000, "Nhân viên"));
+    employeeManager.addEmployee(new Employee(2, "Phạm Văn Mạnh", "1988-11-11", "Đà Nẵng", 2000, "Nhân viên"));
+    employeeManager.addEmployee(new Employee(3, "Hoàng Việt Vương", "1999-11-11", "Huế", 2000, "Nhân viên"));
+</script>
+</body>
+</html>
